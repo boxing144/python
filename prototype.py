@@ -1,5 +1,5 @@
 # 프로토타입 코드
-import tkinter
+# import tkinter
 import streamlit as st
 import pandas as pd
 from datetime import datetime
