@@ -1,5 +1,3 @@
-# 프로토타입 코드
-import tkinter
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -7,16 +5,16 @@ import numpy as np
 import warnings
 from PIL import Image
 from PIL import ImageDraw
-# from tkinter.tix import COLUMN
+from tkinter.tix import COLUMN
 from pyparsing import empty
 from haversine import haversine
 import webbrowser
-# import time
 st.set_page_config(layout="wide")
 
 empty3,con2,empty4 = st.columns([1.2,1,1])
 with con2:
     st.image("119.png")
+
 
 
 warnings.filterwarnings('ignore')
@@ -67,18 +65,18 @@ for i in range(df_er.shape[0]):
     df_er["거리"][i] = round(haversine(A, B), 3)
     
 df_er = df_er[(df_er['응급실수']>0)&(df_er['수술실수']>0)]
-df_er = df_er.reset_index(drop=True)
-# df_er = df_er.loc[(df_er["응급실포화상태"]=="원할")or(df_er["응급실포화상태"]=="보통"), :]
-
+df_er = df_er.reset_index(drop=True)    
     
     
 now = datetime.now() # 현재 시각
+
 empty5,con3,empty6 = st.columns([0.6,0.7,0.5])
 with con3:
     st.header(now)
+    
 
 # st.header("중증질환")
-tab1, tab2 = st.tabs(["환자", "병원"])
+tab1, tab2, tab3 = st.tabs(["환자", "병원", "지도"])
 
 
 with tab1:
@@ -135,23 +133,18 @@ with tab1:
 
     situation = st.radio(label = '중증질환 예측 필요 여부', options = ['필요', "불필요"])
     if situation == "불필요":
-       
         option = st.selectbox('판단', ("중증질환 아님", '뇌출혈', '신생아', '중증화상', "뇌경색", "심근경색", "복부손상", "사지접합", "응급내시경", "응급투석", "조산산모"))
         if st.button('저장'):
             if option == "중증질환 아님":
-                st.write("해당 환자는 중증질환 환자가 아닙니다.")
-            else:
-                st.write("해당 환자의 질환은", option+"입니다.")
-#             if option == "중증질환 아님":
 #                result1 = df_er
-#                 with tab2:
-#                     result1 = df_er.copy()
-#                     sorting = "응급실포화도"
-#                     result1 = df_er.sort_values(sorting, ascending=True)
-#                     result1 = result1.reset_index(drop=True)
+                with tab2:
+                    result1 = df_er.copy()
+                    sorting = "응급실포화도"
+                    result1 = df_er.sort_values(sorting, ascending=True)
+                    result1 = result1.reset_index(drop=True)
             
-#                     st.write(option)
-#                     st.write("모든 병원을 응급실포화도순으로 출력합니다.")
+                    st.write(option)
+                    st.write("모든 병원을 응급실포화도순으로 출력합니다.")
 #                     sorting = st.selectbox('정렬기준',('응급실포화도', '거리'))
 #                         sorting = "응급실포화도"
 #                         result1 = df_er.sort_values(sorting, ascending=True)
@@ -161,26 +154,26 @@ with tab1:
 
                         
                     
-#                     co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
-#                     with co1:
-#                         st.write("병원선정")
-#                         for i in range(result1.shape[0]):
-#                             st.write("="*40)
-#                             if st.button(result1["병원명"][i]): 
-# #                                 st.write("병원선정")
-#                     with co2:
-#                         st.write("응급실연락처")
-#                         for i in range(result1.shape[0]):
-#                             st.write("="*15)
-#                             if st.button(result1["응급실연락처"][i]):
-#                                 with tab2:
-#                                     st.write(result1["병원명"][i], result1["응급실연락처"][i], "에 연결 중입니디.")
-#                     with co3:
+                    co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
+                    with co1:
+                        st.write("병원선정")
+                        for i in range(result1.shape[0]):
+                            st.write("="*40)
+                            if st.button(result1["병원명"][i]):
+                                st.write("병원선정")
+                    with co2:
+                        st.write("응급실연락처")
+                        for i in range(result1.shape[0]):
+                            st.write("="*15)
+                            if st.button(result1["응급실연락처"][i]):
+                                with tab2:
+                                    st.write(result1["병원명"][i], result1["응급실연락처"][i], "에 연결 중입니디.")
+                    with co3:
 #                         sorting = "응급실포화도"
 #                         result1 = df_er.sort_values(sorting, ascending=True)
 #                         result1 = result1.reset_index(drop=True)
-#                         st.write("데이터프레임")
-#                         st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
+                        st.write("데이터프레임")
+                        st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
 # #                             url = f"https://map.naver.com/v5/directions/14364913.508788805,4179550.113085119,%EB%B6%80%EC%82%B0%EC%97%AD%20%EA%B2%BD%EB%B6%80%EC%84%A0(%EA%B3%A0%EC%86%8D%EC%B2%A0%EB%8F%84),13479631,PLACE_POI/14362166.744881283,4180223.5237070248,{result1["병원명"][i]},12131100,PLACE_POI/-/transit?c=14362539.3543570,4179682.5843453,14,0,0,0,dh"
 #                         for i in range(result1.shape[0]):
 #                                 if st.button("확정"):
@@ -188,40 +181,40 @@ with tab1:
 # #                                 with tab3:
 # #                                     webbrowswer.open(url)
                                     
-#             else:
-#                 result1 = df_er[df_er[option]=='Y']
-#                 with tab2:
-#                     st.write(f'{option} 수술이 가능한 병원을 거리순으로 출력합니다.')
-#                     sorting = '거리'
-#                     result1 = result1.sort_values(sorting, ascending=True)
-#                     result1 = result1.reset_index(drop=True)
+            else:
+                result1 = df_er[df_er[option]=='Y']
+                with tab2:
+                    st.write(f'{option} 수술이 가능한 병원을 거리순으로 출력합니다.')
+                    sorting = '거리'
+                    result1 = result1.sort_values(sorting, ascending=True)
+                    result1 = result1.reset_index(drop=True)
                     
-#                     co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
-#                     with co1:
-#                         st.write("병원선정")
-#                         for i in range(result1.shape[0]):
-#                             st.write("="*40)
-#                             if st.button(result1["병원명"][i]):
-#                                 st.write("병원선정")
-#                     with co2:
-#                         st.write("응급실연락처")
-#                         for i in range(result1.shape[0]):
-#                             st.write("="*15)
-#                             if st.button(result1["응급실연락처"][i]):
-#                                 st.write("전화성공.")
-#                     with co3:
-# #                         sorting = "응급실포화도"
-# #                         result1 = df_er.sort_values(sorting, ascending=True)
-# #                         result1 = result1.reset_index(drop=True)
-#                         st.write("데이터프레임")
-#                         st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
+                    co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
+                    with co1:
+                        st.write("병원선정")
+                        for i in range(result1.shape[0]):
+                            st.write("="*40)
+                            if st.button(result1["병원명"][i]):
+                                st.write("병원선정")
+                    with co2:
+                        st.write("응급실연락처")
+                        for i in range(result1.shape[0]):
+                            st.write("="*15)
+                            if st.button(result1["응급실연락처"][i]):
+                                st.write("전화성공.")
+                    with co3:
+#                         sorting = "응급실포화도"
+#                         result1 = df_er.sort_values(sorting, ascending=True)
+#                         result1 = result1.reset_index(drop=True)
+                        st.write("데이터프레임")
+                        st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
               
     else:
         chk1, chk2 = st.columns(2)
         with chk1:
             check1 = st.multiselect('통증/외상_복수선택가능', ['두통', '흉통', '복통', '요통', '골절', '탈구', '염좌', '열상', "찰과상", "타박상"])
         with chk2:
-            check2 = st.multiselect('기타 증상_복수선택가능', ["붓기", "호흡곤란", "기력없음", "어지럼증", "가슴답답함", "의식저하", "구토", "마비", "감각이상", "구역질", "식은땀", "이물질", "쇼크"])
+            check2 = st.multiselect('추가증상_복수선택가능', ["붓기", "호흡곤란", "기력없음", "어지럼증", "가슴답답함", "의식저하", "구토", "마비", "감각이상", "구역질", "식은땀", "이물질", "쇼크"])
 
         final_check += check1
         final_check += check2
@@ -245,97 +238,46 @@ with tab1:
         y = disease['수술명']
         model = DecisionTreeClassifier()
         model.fit(x,y)
-        pred = model.predict(patient)
-        
+
         if st.button('저장'):
-            st.write("해당 환자의 예측 질환은", pred[0]+" 입니다.")
-            
-#             with tab2:
-#                 pred = model.predict(patient)
-#                 result = df_er[df_er[pred[0]]=='Y']
-#                 st.write(f'필요한 수술은 {pred[0]}입니다.')
-#                 st.write(f'{pred[0]} 수술이 가능한 병원을 거리순으로 출력합니다.')
-#                 sorting = "거리"
-#                 result1 = result.sort_values(sorting, ascending=True)
-#                 result1 = result1.reset_index(drop=True)
+            with tab2:
+                pred = model.predict(patient)
+                result = df_er[df_er[pred[0]]=='Y']
+                st.write(f'필요한 수술은 {pred[0]}입니다.')
+                st.write(f'{pred[0]} 수술이 가능한 병원을 거리순으로 출력합니다.')
+                sorting = "거리"
+                result1 = result.sort_values(sorting, ascending=True)
+                result1 = result1.reset_index(drop=True)
                 
-#                 co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
-#                 with co1:
-#                     st.write("병원선정")
-#                     for i in range(result1.shape[0]):
-#                         st.write("="*40)
-#                         if st.button(result1["병원명"][i]):
-#                             st.write("병원선정")
-#                 with co2:
-#                     st.write("응급실연락처")
-#                     for i in range(result1.shape[0]):
-#                         st.write("="*15)
-#                         if st.button(result1["응급실연락처"][i]):
-#                             st.write("전화성공.")
-#                 with co3:
-# #                         sorting = "응급실포화도"
-# #                         result1 = df_er.sort_values(sorting, ascending=True)
-# #                         result1 = result1.reset_index(drop=True)
-#                     st.write("데이터프레임")
-#                     st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
-
-with tab2:
-    navi = pd.read_excel("navi.xlsx")
-    first = st.selectbox('질환', ("뇌경색", '뇌출혈', '신생아', '중증화상', "심근경색", "복부손상", "사지접합", "응급내시경", "응급투석", "조산산모"))
-#     if second == "중증질환 아님":
-#         result1 = df_er
-#     else:
-    second = "뇌경색"
-    result1 = df_er[df_er[first]=='Y']
-    result1 = result1.sort_values(["거리"], ascending=True)
-#     st.write(result1)
-    result1 = result1.loc[(result1["응급실포화상태"]=="원할")|(result1["응급실포화상태"]=="보통"), :]
-    result1 = result1.reset_index(drop=True)
-    
-
-#     st.write(result1)
-    
-    co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
-#     with co3:
-#         st.write("데이터프레임")
-#         st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
-        
-    
-    with co1:        
-        
-        
-        
-        
-        st.write("병원선정")
-        st.write("="*40)
-        for i in range(result1.shape[0]):
-            if st.button(result1["병원명"][i]):
-                name = result1["병원명"][i]
-                
-                url = navi.loc[navi["병원명"] == name, :]
-                url = url["길찾기"].values[0]
-#                 st.write(url)
-                webbrowser.open(url)  # 현위치를 부산역으로 설정했습니다.
-    with co2:
-        st.write("응급실연락처")
-        st.write("="*15)
-        for i in range(result1.shape[0]):
-            if st.button(result1["응급실연락처"][i]):
-#                 
+                co1, co2, co3 = st.columns([0.7, 0.4, 1.0])
+                with co1:
+                    st.write("병원선정")
+                    for i in range(result1.shape[0]):
+                        st.write("="*40)
+                        if st.button(result1["병원명"][i]):
+                            st.write("병원선정")
+                with co2:
+                    st.write("응급실연락처")
+                    for i in range(result1.shape[0]):
+                        st.write("="*15)
+                        if st.button(result1["응급실연락처"][i]):
+                            st.write("전화성공.")
                 with co3:
-                    
-                    st.write(result1["병원명"][i]+"에 통화연결중입니다.")
-                    st.write("="*40)
-                    st.write(result1["응급실연락처"][i])
-                    st.image("전화.png")
-    with co3:
-#                     sorting = "응급실포화도"
-#                     result1 = df_er.sort_values(sorting, ascending=True)
-#                     result1 = result1.reset_index(drop=True)
-        st.write("데이터프레임")
-        st.write("="*15)
-        st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
-    
+#                         sorting = "응급실포화도"
+#                         result1 = df_er.sort_values(sorting, ascending=True)
+#                         result1 = result1.reset_index(drop=True)
+                    st.write("데이터프레임")
+                    st.write(result1[["병원명", "거리", "응급실수", "수술실수", "응급실포화상태"]])
+
+                
+with tab3:
+    empty1,con1,empty2 = st.columns([0.3,1.0,0.3])
+    with empty1:
+        empty() # 여백부분1
+    with con1:
+        st.image("지도.png")
+    with empty2:
+        empty() # 여백부분2
 
 
 
